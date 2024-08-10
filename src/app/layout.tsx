@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Navbar from "./components/molecules/Navbar";
 
 export const metadata: Metadata = {
   title: "MiniEcomm",
@@ -13,7 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="pt-6 px-20">{children}</body>
+      <body className="pt-6 px-20">
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
