@@ -1,38 +1,61 @@
-import StarIconFilledLarge from "@/assets/icons/StarIconFilledLarge";
-import Link from "next/link";
-import HeaderTitle from "./components/atoms/HeaderTitle";
-import { Button } from "./components/atoms/buttons/Button";
-import Searchbar from "./components/molecules/Searchbar";
-import TextField from "./components/atoms/TextField";
-import ProductListTable from "./components/organisms/ProductListTable";
+"use client";
+import { useFormik } from "formik";
+import HeaderTitle from "../components/atoms/HeaderTitle";
+import { Button } from "../components/atoms/buttons/Button";
+import { FormEventHandler, useRef } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { setProduct } from "@/lib/redux/features/productSlice";
+interface AddProductFormData {
+  sku: string;
+  productName: string;
+  price: number;
+  quantity: number;
+  description: string;
+}
 
-export default function Home() {
+export default function AddProduct() {
+  const dispatch = useAppDispatch();
+
+  const initialValues: AddProductFormData = {
+    sku: "",
+    productName: "",
+    price: 0.0,
+    quantity: 0.0,
+    description: "",
+  };
+  // TODO: Reset form after submission
+  // TODO: Add form validation
+  const onSubmit = (values: AddProductFormData) => {
+    console.log(values);
+    dispatch(setProduct(values));
+  };
+
+  const formik = useFormik({
+    initialValues,
+    onSubmit,
+    validateOnChange: false,
+    validate: () => {},
+  });
+
+  const { values, handleChange, handleSubmit } = formik;
+
   return (
     <>
-      {/* Products */}
-      <HeaderTitle title="Products" />
-      <div className="mt-10 flex justify-between">
-        {/* search bar */}
-        <Searchbar />
-        <div className="flex gap-3">
-          {/* button */}
-          <Link href="/add-product">
-            <Button className="w-[249px] flex items-center justify-center h-14 rounded-10px bg-blue-custom">
-              <TextField label="New Product" className="text-gray-250" />
-            </Button>
-          </Link>
-          {/* favorites */}
-          <Link href="/favorites">
-            <div className="flex items-center justify-center border-blue-custom border rounded-10px w-[72px] h-[54px] py-[15px] px-[5px]">
-              <StarIconFilledLarge />
-            </div>
-          </Link>
-        </div>
-      </div>
-      {/* product list */}
-      <div className="px-10">
-        <ProductListTable />
-      </div>
+      <HeaderTitle title="Products" subtitle="Add new product" />
+      {/* add product form */}
+      <form onSubmit={handleSubmit} className="flex flex-col">
+        <label htmlFor="sku">SKU</label>
+        <input
+          type="text"
+          id="sku"
+          name="sku"
+          value={values.sku}
+          onChange={handleChange}
+          className="w-[400px] h-11 rounded-md bg-gray-250"
+        />
+
+        <Button type="submit">Add Product</Button>
+      </form>
     </>
   );
 }
